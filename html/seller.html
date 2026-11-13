@@ -1,0 +1,52 @@
+<section id="page-seller" class="page hidden">
+      <h2>Seller Settings</h2>
+      <p class="hint">
+        Configure how money from ticket sales reaches <strong>your</strong> account.
+        Do not ask buyers to type bank details into a website form.
+      </p>
+
+      <div class="seller-card">
+        <h3>1. Connect a payment provider (recommended)</h3>
+        <p>Create a free account and paste your public key below.</p>
+        <ul class="provider-list">
+          <li><strong>Paystack</strong> – excellent for South Africa</li>
+          <li><strong>Flutterwave</strong> – strong across Africa</li>
+          <li><strong>Stripe</strong> – worldwide</li>
+          <li><strong>PayPal</strong> – easy for many countries</li>
+        </ul>
+        <div class="form-row">
+          <label>Provider</label>
+          <select id="payment-provider">
+            <option value="paystack">Paystack</option>
+            <option value="flutterwave">Flutterwave</option>
+            <option value="stripe">Stripe</option>
+            <option value="paypal">PayPal</option>
+            <option value="demo">Demo only (no real money)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Publishable / Public Key</label>
+          <input type="text" id="provider-key" placeholder="pk_live_... or pk_test_..." />
+        </div>
+        <div class="form-row">
+          <label>Your payout / business email</label>
+          <input type="email" id="payout-email" placeholder="you@yourministry.com" />
+        </div>
+        <button class="btn btn-primary" onclick="saveSellerSettings()">Save settings</button>
+        <p id="seller-save-msg" class="save-msg hidden">Settings saved (this browser only).</p>
+      </div>
+
+      <div class="seller-card mt-4">
+        <h3>2. Current EFT details (from your flyer)</h3>
+        <p>These are shown to buyers as an alternative payment option:</p>
+        <div class="eft-box">
+          <p><strong>Account no:</strong> 2453675091</p>
+          <p><strong>Bank:</strong> Capitec · Mkansi RE</p>
+          <p><strong>RSVP / proof:</strong> +27 79 665 4568</p>
+        </div>
+        <p class="warning">
+          Online card payments through Paystack/Flutterwave are safer and automatic.
+          EFT requires manual proof checking.
+        </p>
+      </div>
+    </section>
