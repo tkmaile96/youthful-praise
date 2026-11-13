@@ -1,0 +1,52 @@
+<!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#" class="logo" onclick="showPage('home')">
+        <img src="/images/logo.jpg" alt="Youthful Praise" class="logo-img" />
+        <span class="logo-text">Youthful Praise</span>
+      </a>
+      <nav class="nav">
+        <a href="#" onclick="showPage('home')">Event</a>
+        <a href="#" onclick="showPage('my-tickets')">My Tickets</a>
+        <a href="#" onclick="showPage('seller')" class="seller-link">Seller Settings</a>
+        <a href="#" onclick="showPage('admin')" class="admin-link">Admin</a>
+      </nav>
+      <div class="header-right">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Open basket">
+          🛒
+          <span id="cart-count" class="cart-count hidden">0</span>
+        </button>
+        <button class="btn btn-outline mobile-menu" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile nav -->
+  <div id="mobile-nav" class="mobile-nav hidden">
+    <a href="#" onclick="showPage('home'); toggleMobileNav()">Event</a>
+    <a href="#" onclick="showPage('my-tickets'); toggleMobileNav()">My Tickets</a>
+    <a href="#" onclick="showPage('seller'); toggleMobileNav()">Seller Settings</a>
+    <a href="#" onclick="showPage('admin'); toggleMobileNav()">Admin</a>
+  </div>
+
+  <!-- Cart drawer -->
+  <div id="cart-overlay" class="cart-overlay hidden" onclick="toggleCart()"></div>
+  <aside id="cart-drawer" class="cart-drawer">
+    <div class="cart-header">
+      <h3>Your Basket</h3>
+      <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items">
+      <!-- filled by JS -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cart-total-amount">R0</strong>
+      </div>
+      <button class="btn btn-primary btn-full" id="checkout-from-cart" onclick="goToCheckoutFromCart()" disabled>
+        Proceed to Checkout
+      </button>
+    </div>
+  </aside>
+
