@@ -1,0 +1,336 @@
+/* ========== CHECKOUT ========== */
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin: 28px 0 18px;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: var(--primary-bright);
+}
+
+#page-checkout h2,
+#page-my-tickets h2,
+#page-seller h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 28px;
+  margin-bottom: 70px;
+  margin-top: 12px;
+}
+
+.checkout-form-card,
+.order-summary-card,
+.seller-card,
+.success-card {
+  background: linear-gradient(165deg, var(--surface) 0%, #18181f 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.checkout-form-card h3,
+.order-summary-card h3 {
+  font-family: var(--font-display);
+  margin-bottom: 20px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.form-row {
+  margin-bottom: 18px;
+}
+
+.form-row label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 7px;
+  font-weight: 500;
+}
+
+.form-row input,
+.form-row select {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 13px 15px;
+  border-radius: 11px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: var(--font-body);
+}
+
+.form-row input:focus,
+.form-row select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.form-row input::placeholder {
+  color: var(--text-dim);
+}
+
+.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
+.mt-4 {
+  margin-top: 28px;
+}
+
+.eft-note {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s, transform 0.12s, box-shadow 0.2s;
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ff6b1a 0%, #ff8533 50%, #ff9a4d 100%);
+  color: white;
+  box-shadow: 0 4px 20px rgba(255, 107, 26, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #e55a0c 0%, #ff6b1a 50%, #ff8533 100%);
+  box-shadow: 0 6px 28px rgba(255, 107, 26, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text);
+}
+
+.btn-outline:hover {
+  background: var(--surface-2);
+  border-color: var(--text-muted);
+}
+
+.btn-full {
+  width: 100%;
+  margin-top: 4px;
+  padding: 15px 24px;
+  font-size: 1rem;
+}
+
+/* ========== ORDER SUMMARY ========== */
+.order-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 11px;
+  font-size: 0.95rem;
+}
+
+.order-total {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 14px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+}
+
+.order-total span:last-child {
+  color: var(--primary-bright);
+}
+
+/* ========== SUCCESS ========== */
+.success-card {
+  text-align: center;
+  max-width: 500px;
+  margin: 70px auto;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.08));
+  color: var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 auto 22px;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.success-card h2 {
+  font-family: var(--font-display);
+  margin-bottom: 10px;
+  font-size: 1.6rem;
+}
+
+.success-card p {
+  color: var(--text-muted);
+  margin-bottom: 26px;
+  font-size: 1.02rem;
+}
+
+.success-details {
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: left;
+  margin-bottom: 26px;
+  font-size: 0.92rem;
+  border: 1px solid var(--border);
+}
+
+.success-card .btn {
+  margin: 6px;
+}
+
+/* ========== MY TICKETS ========== */
+.my-tickets-list {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 70px;
+  margin-top: 20px;
+}
+
+.ticket-item {
+  background: linear-gradient(165deg, var(--surface) 0%, #18181f 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  transition: border-color 0.2s;
+}
+
+.ticket-item:hover {
+  border-color: rgba(255, 107, 26, 0.3);
+}
+
+.ticket-item h4 {
+  font-family: var(--font-display);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.ticket-item p {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.ticket-code {
+  font-family: ui-monospace, monospace;
+  background: var(--bg-elevated);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  color: var(--accent-soft);
+  font-weight: 600;
+}
+
+/* ========== SELLER ========== */
+.provider-list {
+  margin: 12px 0 22px 20px;
+  color: var(--text-muted);
+}
+
+.provider-list li {
+  margin-bottom: 7px;
+}
+
+.eft-box {
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 12px 0 16px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border);
+}
+
+.eft-box p {
+  margin-bottom: 5px;
+}
+
+.warning {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.save-msg {
+  color: var(--success);
+  margin-top: 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.save-msg.hidden {
+  display: none;
+}
+
