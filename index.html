@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Youthful Praise – Tickets</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#" class="logo" onclick="showPage('home')">
+        <img src="logo.jpg" alt="Youthful Praise" class="logo-img" />
+        <span class="logo-text">Youthful Praise</span>
+      </a>
+      <nav class="nav">
+        <a href="#" onclick="showPage('home')">Event</a>
+        <a href="#" onclick="showPage('my-tickets')">My Tickets</a>
+        <a href="#" onclick="showPage('seller')" class="seller-link">Seller Settings</a>
+        <a href="#" onclick="showPage('admin')" class="admin-link">Admin</a>
+      </nav>
+      <div class="header-right">
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Open basket">
+          🛒
+          <span id="cart-count" class="cart-count hidden">0</span>
+        </button>
+        <button class="btn btn-outline mobile-menu" onclick="toggleMobileNav()">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile nav -->
+  <div id="mobile-nav" class="mobile-nav hidden">
+    <a href="#" onclick="showPage('home'); toggleMobileNav()">Event</a>
+    <a href="#" onclick="showPage('my-tickets'); toggleMobileNav()">My Tickets</a>
+    <a href="#" onclick="showPage('seller'); toggleMobileNav()">Seller Settings</a>
+    <a href="#" onclick="showPage('admin'); toggleMobileNav()">Admin</a>
+  </div>
+
+  <!-- Cart drawer -->
+  <div id="cart-overlay" class="cart-overlay hidden" onclick="toggleCart()"></div>
+  <aside id="cart-drawer" class="cart-drawer">
+    <div class="cart-header">
+      <h3>Your Basket</h3>
+      <button class="close-cart" onclick="toggleCart()">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items">
+      <!-- filled by JS -->
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <strong id="cart-total-amount">R0</strong>
+      </div>
+      <button class="btn btn-primary btn-full" id="checkout-from-cart" onclick="goToCheckoutFromCart()" disabled>
+        Proceed to Checkout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="container">
+    <!-- HOME / EVENT PAGE -->
+    <section id="page-home" class="page">
+      <div class="event-hero">
+        <div class="flyer-wrap">
+          <img src="flyer.jpg" alt="Youthful Praise – Let Your Praise Change the Atmosphere" class="flyer-img" />
+        </div>
+        <div class="event-hero-info">
+          <div class="badge">Youth Event</div>
+          <h1>Youthful Praise</h1>
+          <p class="tagline">Let your praise change the atmosphere</p>
+          <p class="scripture">“I will praise you, Lord, with all my heart; I will tell of all your wonderful deeds.” — Psalm 9:1</p>
+
+          <div class="event-meta-grid">
+            <div class="meta-item">
+              <span class="meta-icon">📅</span>
+              <div>
+                <strong>22 December 2026</strong>
+                <span>Doors 17:00 · Starts 18:00</span>
+              </div>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">📍</span>
+              <div>
+                <strong>Zimmerman Church of the Nazarene</strong>
+                <span>Mkhululine</span>
+              </div>
+            </div>
+            <div class="meta-item">
+              <span class="meta-icon">🎟️</span>
+              <div>
+                <strong>R30 per ticket</strong>
+                <span>All youth · One purpose · One God</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ticket-selector-card">
+            <h3>Get your tickets</h3>
+            <p class="hint">Choose how many tickets you need, then add them to your basket.</p>
+            <div class="qty-row">
+              <label>Number of tickets</label>
+              <div class="qty-controls large">
+                <button type="button" onclick="changeHomeQty(-1)">−</button>
+                <span id="home-qty">1</span>
+                <button type="button" onclick="changeHomeQty(1)">+</button>
+              </div>
+            </div>
+            <div class="price-row">
+              <span>Total</span>
+              <strong id="home-total">R30</strong>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="addToCartFromHome()">
+              Add to Basket
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <h2>About the night</h2>
+        <p>
+          Youthful Praise is a night of worship, the Word, fellowship and more.
+          All youth, one purpose, one God. Come ready to praise and let the atmosphere change.
+        </p>
+        <div class="pillars">
+          <div class="pillar">Youth</div>
+          <div class="pillar">Worship</div>
+          <div class="pillar">Word</div>
+          <div class="pillar">Fellowship</div>
+        </div>
+        <p class="contact-line">
+          RSVP / Enquiries: <a href="tel:+27796654568">+27 79 665 4568</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section id="page-checkout" class="page hidden">
+      <button class="back-btn" onclick="showPage('home')">← Back to event</button>
+      <h2>Checkout</h2>
+      <div class="checkout-layout">
+        <div class="checkout-form-card">
+          <h3>Your details</h3>
+          <form id="checkout-form" onsubmit="processPayment(event)">
+            <div class="form-row">
+              <label>Full name</label>
+              <input type="text" id="buyer-name" required placeholder="Jane Doe" />
+            </div>
+            <div class="form-row">
+              <label>Email</label>
+              <input type="email" id="buyer-email" required placeholder="jane@example.com" />
+            </div>
+            <div class="form-row">
+              <label>Phone</label>
+              <input type="tel" id="buyer-phone" placeholder="+27 79 000 0000" />
+            </div>
+
+            <h3 class="mt-4">Payment</h3>
+            <p class="hint">
+              This is a demo checkout. For live sales connect Paystack / Flutterwave / Stripe
+              in Seller Settings. Buyers will pay online and money goes to your connected account.
+            </p>
+            <div class="form-row">
+              <label>Card number (demo only)</label>
+              <input type="text" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19" />
+            </div>
+            <div class="form-row two-cols">
+              <div>
+                <label>Expiry</label>
+                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" />
+              </div>
+              <div>
+                <label>CVC</label>
+                <input type="text" id="card-cvc" placeholder="123" maxlength="4" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" id="pay-btn">
+              Pay <span id="pay-amount">R0</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="order-summary-card">
+          <h3>Order summary</h3>
+          <div id="order-summary">
+            <!-- filled by JS -->
+          </div>
+          <p class="eft-note">
+            Prefer EFT? You can still pay into the Capitec account shown on the flyer
+            (Account: 2453675091 · Capitec Mkansi RE) and send proof to the RSVP number.
+            Online payment is safer and automatic once a provider is connected.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUCCESS -->
+    <section id="page-success" class="page hidden">
+      <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h2>Payment successful!</h2>
+        <p>Your tickets for Youthful Praise are confirmed. See you on 22 December 2026!</p>
+        <div id="success-details" class="success-details"></div>
+        <button class="btn btn-primary" onclick="showPage('home')">Back to event</button>
+        <button class="btn btn-outline" onclick="showPage('my-tickets')">View my tickets</button>
+      </div>
+    </section>
+
+    <!-- MY TICKETS -->
+    <section id="page-my-tickets" class="page hidden">
+      <h2>My Tickets</h2>
+      <p class="hint">Tickets are stored in this browser only (demo).</p>
+      <div id="my-tickets-list" class="my-tickets-list"></div>
+    </section>
+
+    <!-- SELLER SETTINGS -->
+    <section id="page-seller" class="page hidden">
+      <h2>Seller Settings</h2>
+      <p class="hint">
+        Configure how money from ticket sales reaches <strong>your</strong> account.
+        Do not ask buyers to type bank details into a website form.
+      </p>
+
+      <div class="seller-card">
+        <h3>1. Connect a payment provider (recommended)</h3>
+        <p>Create a free account and paste your public key below.</p>
+        <ul class="provider-list">
+          <li><strong>Paystack</strong> – excellent for South Africa</li>
+          <li><strong>Flutterwave</strong> – strong across Africa</li>
+          <li><strong>Stripe</strong> – worldwide</li>
+          <li><strong>PayPal</strong> – easy for many countries</li>
+        </ul>
+        <div class="form-row">
+          <label>Provider</label>
+          <select id="payment-provider">
+            <option value="paystack">Paystack</option>
+            <option value="flutterwave">Flutterwave</option>
+            <option value="stripe">Stripe</option>
+            <option value="paypal">PayPal</option>
+            <option value="demo">Demo only (no real money)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Publishable / Public Key</label>
+          <input type="text" id="provider-key" placeholder="pk_live_... or pk_test_..." />
+        </div>
+        <div class="form-row">
+          <label>Your payout / business email</label>
+          <input type="email" id="payout-email" placeholder="you@yourministry.com" />
+        </div>
+        <button class="btn btn-primary" onclick="saveSellerSettings()">Save settings</button>
+        <p id="seller-save-msg" class="save-msg hidden">Settings saved (this browser only).</p>
+      </div>
+
+      <div class="seller-card mt-4">
+        <h3>2. Current EFT details (from your flyer)</h3>
+        <p>These are shown to buyers as an alternative payment option:</p>
+        <div class="eft-box">
+          <p><strong>Account no:</strong> 2453675091</p>
+          <p><strong>Bank:</strong> Capitec · Mkansi RE</p>
+          <p><strong>RSVP / proof:</strong> +27 79 665 4568</p>
+        </div>
+        <p class="warning">
+          Online card payments through Paystack/Flutterwave are safer and automatic.
+          EFT requires manual proof checking.
+        </p>
+      </div>
+    </section>
+
+    <!-- ADMIN (password protected) -->
+    <section id="page-admin" class="page hidden">
+      <h2>Admin Dashboard</h2>
+      <p class="hint">Only the site owner should access this page.</p>
+
+      <div id="admin-login" class="seller-card" style="max-width:420px;">
+        <h3>Enter admin password</h3>
+        <div class="form-row">
+          <label>Password</label>
+          <input type="password" id="admin-password" placeholder="Enter password" />
+        </div>
+        <button class="btn btn-primary" onclick="adminLogin()">Unlock</button>
+        <p id="admin-login-error" class="warning hidden" style="margin-top:14px;">Wrong password.</p>
+        <p class="hint" style="margin-top:16px;">Default password: <code>ypadmin2026</code> (change it in script.js)</p>
+      </div>
+
+      <div id="admin-panel" class="hidden">
+        <div class="admin-stats">
+          <div class="stat-card">
+            <span class="stat-label">Total orders</span>
+            <strong id="stat-orders">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Tickets sold</span>
+            <strong id="stat-tickets">0</strong>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Revenue</span>
+            <strong id="stat-revenue">R0</strong>
+          </div>
+        </div>
+
+        <div class="seller-card mt-4">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <h3 style="margin:0;">All purchases</h3>
+            <button class="btn btn-outline" onclick="exportOrdersCSV()">Download CSV</button>
+          </div>
+          <div id="admin-orders-list"></div>
+        </div>
+
+        <p class="hint" style="margin-top:20px;">
+          Note: On a static site, orders are stored in each visitor’s browser.
+          For full multi-device tracking, connect a real backend or use the email notifications
+          that are sent to <strong>pinohlungwane@gmail.com</strong> on every purchase.
+        </p>
+        <button class="btn btn-outline" onclick="adminLogout()" style="margin-top:12px;">Log out</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Youthful Praise · All youth · One purpose · One God · 22 Dec 2026</p>
+    </div>
+  </footer>
+
+  <!-- EmailJS – free email sending from the browser -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
