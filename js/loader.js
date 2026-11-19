@@ -4,6 +4,7 @@ const fragments = [
   { target: "app-pages", path: "html/checkout.html" },
   { target: "app-pages", path: "html/success.html" },
   { target: "app-pages", path: "html/my-tickets.html" },
+  { target: "app-pages", path: "html/account.html" },
   { target: "app-pages", path: "html/seller.html" },
   { target: "app-pages", path: "html/admin.html" },
   { target: "app-footer", path: "html/footer.html" },
@@ -11,6 +12,7 @@ const fragments = [
 
 const appScripts = [
   "js/config.js",
+  "js/auth.js",
   "js/navigation.js",
   "js/cart.js",
   "js/checkout.js",

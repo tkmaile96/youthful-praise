@@ -1,0 +1,39 @@
+<section id="page-account" class="page hidden">
+  <h2>Your account</h2>
+  <div id="auth-config-notice" class="seller-card hidden" role="status">
+    <h3>Authentication setup required</h3>
+    <p class="hint">Create a Supabase project, run <code>supabase/schema.sql</code>, then add your project URL and publishable key in <code>js/config.js</code>.</p>
+  </div>
+
+  <div id="auth-signed-out" class="seller-card" style="max-width:520px;">
+    <div class="form-row">
+      <label for="auth-mode">Account action</label>
+      <select id="auth-mode" onchange="toggleAuthMode()">
+        <option value="signin">Sign in</option>
+        <option value="signup">Create account</option>
+      </select>
+    </div>
+    <form id="auth-form" onsubmit="submitAuth(event)">
+      <div class="form-row" id="auth-name-row">
+        <label for="auth-name">Full name</label>
+        <input id="auth-name" type="text" maxlength="120" autocomplete="name" />
+      </div>
+      <div class="form-row">
+        <label for="auth-email">Email</label>
+        <input id="auth-email" type="email" required autocomplete="email" />
+      </div>
+      <div class="form-row">
+        <label for="auth-password">Password</label>
+        <input id="auth-password" type="password" required minlength="8" autocomplete="current-password" />
+      </div>
+      <button id="auth-submit" class="btn btn-primary" type="submit">Sign in</button>
+    </form>
+    <p id="auth-message" class="hint" role="status" aria-live="polite"></p>
+  </div>
+
+  <div id="auth-signed-in" class="seller-card hidden">
+    <h3 id="auth-user-email"></h3>
+    <p id="auth-user-role" class="hint"></p>
+    <button class="btn btn-outline" type="button" onclick="signOutUser()">Sign out</button>
+  </div>
+</section>

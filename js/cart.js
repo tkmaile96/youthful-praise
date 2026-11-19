@@ -93,6 +93,11 @@ function clearBasket() {
 function goToCheckoutFromCart() {
   if (basketQty === 0) return;
   toggleCart();
+  if (supabaseClient && !authUser) {
+    setPageMessage("Sign in or create an account to request tickets.");
+    showPage("account");
+    return;
+  }
   showPage("checkout");
 }
 

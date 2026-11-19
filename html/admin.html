@@ -1,47 +1,8 @@
 <section id="page-admin" class="page hidden">
       <h2>Admin Dashboard</h2>
-      <p class="hint">Only the site owner should access this page.</p>
-
-      <div id="admin-login" class="seller-card" style="max-width:420px;">
-        <h3>Enter admin password</h3>
-        <div class="form-row">
-          <label>Password</label>
-          <input type="password" id="admin-password" placeholder="Enter password" />
-        </div>
-        <button class="btn btn-primary" onclick="adminLogin()">Unlock</button>
-        <p id="admin-login-error" class="warning hidden" style="margin-top:14px;">Wrong password.</p>
-        <p class="hint" style="margin-top:16px;">Default password: <code>ypadmin2026</code> (change it in js/config.js)</p>
-      </div>
-
-      <div id="admin-panel" class="hidden">
-        <div class="admin-stats">
-          <div class="stat-card">
-            <span class="stat-label">Total orders</span>
-            <strong id="stat-orders">0</strong>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Tickets sold</span>
-            <strong id="stat-tickets">0</strong>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Revenue</span>
-            <strong id="stat-revenue">R0</strong>
-          </div>
-        </div>
-
-        <div class="seller-card mt-4">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-            <h3 style="margin:0;">All purchases</h3>
-            <button class="btn btn-outline" onclick="exportOrdersCSV()">Download CSV</button>
-          </div>
-          <div id="admin-orders-list"></div>
-        </div>
-
-        <p class="hint" style="margin-top:20px;">
-          Note: On a static site, orders are stored in each visitor’s browser.
-          For full multi-device tracking, connect a real backend or use the email notifications
-          that are sent to <strong>pinohlungwane@gmail.com</strong> on every purchase.
-        </p>
-        <button class="btn btn-outline" onclick="adminLogout()" style="margin-top:12px;">Log out</button>
+      <div class="seller-card">
+        <p class="hint">Verify payment through your payment provider before approving a request. Approval creates the tickets immediately.</p>
+        <p id="admin-status" class="hint" role="status" aria-live="polite"></p>
+        <div id="admin-requests-list" class="my-tickets-list"></div>
       </div>
     </section>

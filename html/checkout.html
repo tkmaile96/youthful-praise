@@ -3,43 +3,24 @@
       <h2>Checkout</h2>
       <div class="checkout-layout">
         <div class="checkout-form-card">
-          <h3>Your details</h3>
+          <h3>Request tickets</h3>
           <form id="checkout-form" onsubmit="processPayment(event)">
             <div class="form-row">
               <label>Full name</label>
-              <input type="text" id="buyer-name" required placeholder="Jane Doe" />
+              <input type="text" id="buyer-name" required maxlength="120" placeholder="Jane Doe" />
             </div>
             <div class="form-row">
-              <label>Email</label>
-              <input type="email" id="buyer-email" required placeholder="jane@example.com" />
+              <label>Account email</label>
+              <input type="email" id="buyer-email" readonly />
             </div>
             <div class="form-row">
               <label>Phone</label>
               <input type="tel" id="buyer-phone" placeholder="+27 79 000 0000" />
             </div>
 
-            <h3 class="mt-4">Payment</h3>
-            <p class="hint">
-              This is a demo checkout. For live sales connect Paystack / Flutterwave / Stripe
-              in Seller Settings. Buyers will pay online and money goes to your connected account.
-            </p>
-            <div class="form-row">
-              <label>Card number (demo only)</label>
-              <input type="text" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19" />
-            </div>
-            <div class="form-row two-cols">
-              <div>
-                <label>Expiry</label>
-                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" />
-              </div>
-              <div>
-                <label>CVC</label>
-                <input type="text" id="card-cvc" placeholder="123" maxlength="4" />
-              </div>
-            </div>
-
+            <p class="hint mt-4">This sends a request to the event team. Tickets are issued only after an administrator approves it and confirms payment.</p>
             <button type="submit" class="btn btn-primary btn-full" id="pay-btn">
-              Pay <span id="pay-amount">R0</span>
+              Submit ticket request
             </button>
           </form>
         </div>
@@ -49,11 +30,7 @@
           <div id="order-summary">
             <!-- filled by JS -->
           </div>
-          <p class="eft-note">
-            Prefer EFT? You can still pay into the Capitec account shown on the flyer
-            (Account: 2453675091 · Capitec Mkansi RE) and send proof to the RSVP number.
-            Online payment is safer and automatic once a provider is connected.
-          </p>
+          <p class="eft-note">Your request will remain pending until the event team confirms payment and approves it.</p>
         </div>
       </div>
     </section>

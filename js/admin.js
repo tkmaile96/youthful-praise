@@ -1,108 +1,88 @@
-// ADMIN DASHBOARD
-// ============================================
-function renderAdmin() {
-  if (adminUnlocked) {
-    document.getElementById("admin-login").classList.add("hidden");
-    document.getElementById("admin-panel").classList.remove("hidden");
-    loadAdminStats();
-  } else {
-    document.getElementById("admin-login").classList.remove("hidden");
-    document.getElementById("admin-panel").classList.add("hidden");
-    document.getElementById("admin-login-error").classList.add("hidden");
+async function renderAdmin() {
+  const status = document.getElementById("admin-status");
+  const list = document.getElementById("admin-requests-list");
+
+  if (!supabaseClient) {
+    status.textContent = "Configure Supabase to enable administrator access.";
+    list.replaceChildren();
+    return;
   }
-}
-
-function adminLogin() {
-  const input = document.getElementById("admin-password").value;
-  if (input === ADMIN_PASSWORD) {
-    adminUnlocked = true;
-    sessionStorage.setItem("ypAdminUnlocked", "1");
-    document.getElementById("admin-password").value = "";
-    renderAdmin();
-  } else {
-    document.getElementById("admin-login-error").classList.remove("hidden");
+  if (!authUser) {
+    status.textContent = "Sign in with an administrator account to review requests.";
+    list.replaceChildren();
+    return;
   }
-}
-
-function adminLogout() {
-  adminUnlocked = false;
-  sessionStorage.removeItem("ypAdminUnlocked");
-  renderAdmin();
-}
-
-function loadAdminStats() {
-  const orders = JSON.parse(localStorage.getItem("ypAllOrders") || "[]");
-  const totalTickets = orders.reduce((sum, o) => sum + (o.qty || 0), 0);
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-
-  document.getElementById("stat-orders").textContent = orders.length;
-  document.getElementById("stat-tickets").textContent = totalTickets;
-  document.getElementById("stat-revenue").textContent = "R" + totalRevenue;
-
-  const list = document.getElementById("admin-orders-list");
-  if (!orders.length) {
-    list.innerHTML = `<p style="color:var(--text-muted);padding:20px 0;">No purchases recorded in this browser yet.</p>`;
+  if (!isAdmin) {
+    status.textContent = "This account does not have administrator access.";
+    list.replaceChildren();
     return;
   }
 
-  list.innerHTML = `
-    <div style="overflow-x:auto;">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Buyer</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Tickets</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${orders
-            .map(
-              (o) => `
-            <tr>
-              <td><code>${o.id}</code></td>
-              <td>${new Date(o.createdAt).toLocaleString("en-ZA")}</td>
-              <td>${o.buyer.name}</td>
-              <td>${o.buyer.email}</td>
-              <td>${o.buyer.phone || "—"}</td>
-              <td>${o.qty}</td>
-              <td>R${o.total}</td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
+  status.textContent = "Loading ticket requests...";
+  try {
+    const { data: requests, error } = await supabaseClient
+      .from("ticket_requests")
+      .select("id, email, full_name, phone, quantity, status, created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
 
-function exportOrdersCSV() {
-  const orders = JSON.parse(localStorage.getItem("ypAllOrders") || "[]");
-  if (!orders.length) {
-    alert("No orders to export.");
-    return;
+    status.textContent = requests.length ? `${requests.length} request(s)` : "No ticket requests yet.";
+    list.replaceChildren();
+    requests.forEach((request) => list.appendChild(createRequestRow(request)));
+  } catch (error) {
+    status.textContent = error.message || "Could not load ticket requests.";
   }
-  const header = "Order ID,Purchase Time,Buyer Name,Email,Phone,Tickets,Total\n";
-  const rows = orders
-    .map(
-      (o) =>
-        `"${o.id}","${o.createdAt}","${o.buyer.name}","${o.buyer.email}","${
-          o.buyer.phone || ""
-        }",${o.qty},${o.total}`
-    )
-    .join("\n");
-  const blob = new Blob([header + rows], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "youthful-praise-orders.csv";
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
-// ============================================
+function createRequestRow(request) {
+  const row = document.createElement("article");
+  row.className = "ticket-item";
+
+  const details = document.createElement("div");
+  const name = document.createElement("h4");
+  name.textContent = request.full_name;
+  const email = document.createElement("p");
+  email.textContent = request.email;
+  const info = document.createElement("p");
+  info.textContent = `${request.quantity} ticket(s) · ${request.status} · ${new Date(request.created_at).toLocaleString()}`;
+  details.append(name, email, info);
+  row.appendChild(details);
+
+  if (request.phone) {
+    const phone = document.createElement("p");
+    phone.textContent = request.phone;
+    details.appendChild(phone);
+  }
+
+  if (request.status === "pending") {
+    const approveButton = document.createElement("button");
+    approveButton.type = "button";
+    approveButton.className = "btn btn-primary";
+    approveButton.textContent = "Approve and issue tickets";
+    approveButton.addEventListener("click", () => approveTicketRequest(request.id, approveButton));
+    row.appendChild(approveButton);
+  }
+  return row;
+}
+
+async function approveTicketRequest(requestId, button) {
+  if (!isAdmin || !supabaseClient) return;
+  button.disabled = true;
+  button.textContent = "Approving...";
+  try {
+    const { error } = await supabaseClient.rpc("approve_ticket_request", { p_request_id: requestId });
+    if (error) throw error;
+    const { error: emailError } = await supabaseClient.functions.invoke("ticket-notifications", {
+      body: { action: "request_approved", request_id: requestId },
+    });
+    await renderAdmin();
+    if (emailError) {
+      document.getElementById("admin-status").textContent =
+        "Approved and tickets issued, but the ticket email could not be sent.";
+    }
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = "Approve and issue tickets";
+    document.getElementById("admin-status").textContent = error.message || "Could not approve this request.";
+  }
+}

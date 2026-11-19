@@ -290,6 +290,91 @@
   font-weight: 600;
 }
 
+.admission-ticket {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(145px, 190px);
+  min-height: 180px;
+  overflow: hidden;
+  color: #24211e;
+  background: #fffaf4;
+  border: 2px solid #312820;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.admission-ticket-main {
+  padding: 20px 24px;
+}
+
+.admission-ticket-eyebrow {
+  color: #a43b08 !important;
+  font-size: 0.7rem !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.admission-ticket h4 {
+  margin: 4px 0 8px;
+  color: #24211e;
+  font-size: 1.3rem;
+}
+
+.admission-ticket .admission-ticket-name {
+  margin: 7px 0;
+  color: #24211e;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.admission-ticket-details {
+  color: #51483f !important;
+}
+
+.admission-ticket-issued {
+  margin-top: 8px;
+  font-size: 0.75rem !important;
+}
+
+.admission-ticket-stub {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 14px;
+  background: #f7e8d8;
+  border-left: 2px dashed #76695d;
+}
+
+.admission-ticket-stub span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.admission-ticket-stub strong {
+  font-family: ui-monospace, monospace;
+  font-size: 1.1rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .admission-ticket {
+    grid-template-columns: minmax(0, 1fr) 128px;
+  }
+
+  .admission-ticket-main {
+    padding: 16px;
+  }
+
+  .admission-ticket-stub {
+    padding: 14px 10px;
+  }
+
+  .admission-ticket-stub strong {
+    font-size: 0.9rem;
+  }
+}
+
 /* ========== SELLER ========== */
 .provider-list {
   margin: 12px 0 22px 20px;

@@ -12,27 +12,17 @@ const EVENT = {
   currency: "R",
 };
 
-// Admin notification email (every purchase is sent here)
-const ADMIN_EMAIL = "pinohlungwane@gmail.com";
+const SUPABASE_URL = "https://gqzhquseijhmeboisihy.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_-2gMMA9CPV485YOiyklyAA_YxUqtzSq";
 
-// Admin password – change this to something only you know
-const ADMIN_PASSWORD = "ypadmin2026";
-
-// --------------------------------------------
-// EMAILJS SETUP (required for real emails)
-// 1. Go to https://www.emailjs.com and create a free account
-// 2. Add an Email Service (Gmail is fine)
-// 3. Create TWO email templates (see EMAILJS_SETUP.md in this folder)
-// 4. Paste your keys below
-// --------------------------------------------
-const EMAILJS_PUBLIC_KEY = "cSXjK8ZSwnTPI4Uy9";      // e.g. "AbCdEfGhIjK..."
-const EMAILJS_SERVICE_ID = "service_wde8y0j";      // e.g. "service_xxxxx"
-const EMAILJS_TEMPLATE_BUYER = "template_bw48z7g"; // template for the customer
-const EMAILJS_TEMPLATE_ADMIN = "template_ixjoecn"; // template for pinohlungwane@gmail.com
+const supabaseClient = window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
 
 // Basket
 let basketQty = 0;
 let homeQty = 1;
-let adminUnlocked = sessionStorage.getItem("ypAdminUnlocked") === "1";
+let authUser = null;
+let isAdmin = false;
 
 // ============================================

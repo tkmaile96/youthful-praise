@@ -17,10 +17,10 @@ function renderOrderSummary() {
       <span>R${total}</span>
     </div>
   `;
-  document.getElementById("pay-amount").textContent = `R${total}`;
+  document.getElementById("buyer-email").value = authUser?.email || "";
 }
 
-function processPayment(e) {
+async function processPayment(e) {
   e.preventDefault();
 
   if (basketQty === 0) {
@@ -29,134 +29,60 @@ function processPayment(e) {
   }
 
   const name = document.getElementById("buyer-name").value.trim();
-  const email = document.getElementById("buyer-email").value.trim();
   const phone = document.getElementById("buyer-phone").value.trim();
 
-  if (!name || !email) {
-    alert("Please fill in your name and email.");
+  if (!supabaseClient || !authUser) {
+    setPageMessage("Sign in before submitting a ticket request.");
+    showPage("account");
     return;
   }
 
-  const btn = document.getElementById("pay-btn");
-  btn.disabled = true;
-  btn.textContent = "Processing…";
+  const button = document.getElementById("pay-btn");
+  button.disabled = true;
+  button.textContent = "Submitting...";
 
-  const order = {
-    id: "YP-" + Date.now().toString(36).toUpperCase(),
-    event: EVENT.title,
-    date: EVENT.date,
-    time: EVENT.time,
-    venue: EVENT.venue,
-    qty: basketQty,
-    total: basketQty * EVENT.price,
-    buyer: { name, email, phone },
-    createdAt: new Date().toISOString(),
-  };
+  try {
+    const { data, error } = await supabaseClient
+      .from("ticket_requests")
+      .insert({
+        user_id: authUser.id,
+        email: authUser.email,
+        full_name: name,
+        phone,
+        quantity: basketQty,
+      })
+      .select("id, quantity, status, created_at")
+      .single();
 
-  // Save for "My Tickets" (this browser)
-  const myTickets = JSON.parse(localStorage.getItem("ypTickets") || "[]");
-  myTickets.unshift(order);
-  localStorage.setItem("ypTickets", JSON.stringify(myTickets));
+    if (error) throw error;
 
-  // Save for Admin dashboard (this browser)
-  const allOrders = JSON.parse(localStorage.getItem("ypAllOrders") || "[]");
-  allOrders.unshift(order);
-  localStorage.setItem("ypAllOrders", JSON.stringify(allOrders));
-
-  // Send emails (buyer confirmation + admin notification)
-  sendPurchaseEmails(order)
-    .then(() => {
-      basketQty = 0;
-      updateCartUI();
-      showSuccess(order);
-    })
-    .catch((err) => {
-      console.warn("Email send issue:", err);
-      // Still show success – order is saved; emails may need EmailJS setup
-      basketQty = 0;
-      updateCartUI();
-      showSuccess(order, true);
-    })
-    .finally(() => {
-      btn.disabled = false;
-      btn.innerHTML = `Pay <span id="pay-amount">R0</span>`;
+    const { error: emailError } = await supabaseClient.functions.invoke("ticket-notifications", {
+      body: { action: "request_created", request_id: data.id },
     });
-}
 
-/**
- * Sends two emails via EmailJS:
- * 1. Confirmation to the buyer
- * 2. Notification to ADMIN_EMAIL (pinohlungwane@gmail.com)
- */
-function sendPurchaseEmails(order) {
-  // If keys are not configured yet, skip real send and resolve
-  if (
-    EMAILJS_PUBLIC_KEY === "YOUR_PUBLIC_KEY" ||
-    !window.emailjs
-  ) {
-    console.info(
-      "EmailJS not configured yet. Order saved locally. " +
-        "Follow js/EMAILJS_SETUP.md to enable real emails."
-    );
-    return Promise.resolve({ skipped: true });
+    basketQty = 0;
+    updateCartUI();
+    showSuccess(data, !emailError);
+  } catch (error) {
+    setPageMessage(error.message || "Could not submit the request. Please try again.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Submit ticket request";
   }
-
-  emailjs.init(EMAILJS_PUBLIC_KEY);
-
-  const common = {
-    order_id: order.id,
-    event_name: order.event,
-    event_date: "22 December 2026",
-    event_time: order.time,
-    venue: order.venue,
-    qty: String(order.qty),
-    total: "R" + order.total,
-    buyer_name: order.buyer.name,
-    buyer_email: order.buyer.email,
-    buyer_phone: order.buyer.phone || "Not provided",
-    purchase_time: new Date(order.createdAt).toLocaleString("en-ZA"),
-  };
-
-  // Email to buyer
-  const buyerPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_BUYER, {
-    ...common,
-    to_email: order.buyer.email,
-    to_name: order.buyer.name,
-  });
-
-  // Email to admin (pinohlungwane@gmail.com)
-  const adminPromise = emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, {
-    ...common,
-    to_email: ADMIN_EMAIL,
-    to_name: "Youthful Praise Admin",
-  });
-
-  return Promise.all([buyerPromise, adminPromise]);
 }
 
-function showSuccess(order, emailSkipped) {
+function showSuccess(request, emailSent) {
   const details = document.getElementById("success-details");
-  details.innerHTML = `
-    <p><strong>Order ID:</strong> ${order.id}</p>
-    <p><strong>Event:</strong> ${order.event}</p>
-    <p><strong>Tickets:</strong> ${order.qty}</p>
-    <p><strong>Buyer:</strong> ${order.buyer.name} (${order.buyer.email})</p>
-    <p><strong>Total paid:</strong> R${order.total}</p>
-    <p style="margin-top:10px;color:var(--text-muted);font-size:0.85rem;">
-      See you on 22 December 2026 at Zimmerman Church of the Nazarene, Mkhululine.
-    </p>
-    ${
-      emailSkipped
-        ? `<p style="margin-top:10px;color:#fbbf24;font-size:0.85rem;">
-            Note: Email service is not fully connected yet. Your order is saved.
-            The owner will still receive orders once EmailJS is set up.
-          </p>`
-        : `<p style="margin-top:10px;color:var(--success);font-size:0.85rem;">
-            A confirmation has been sent to ${order.buyer.email}.
-          </p>`
-    }
-  `;
+  const emailMessage = emailSent
+    ? ` A confirmation email was sent to ${authUser.email}.`
+    : " We could not send the confirmation email; your request is still recorded.";
+  details.textContent = `Request ${request.id} is ${request.status}. ${request.quantity} ticket(s) requested. Check My Tickets for updates.${emailMessage}`;
   showPage("success");
+}
+
+function setPageMessage(message) {
+  const target = document.getElementById("auth-message");
+  if (target) target.textContent = message;
 }
 
 // ============================================
